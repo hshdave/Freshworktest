@@ -7,12 +7,20 @@
 
     <fragment
         android:id="@+id/search_fragment"
-        android:name="com.example.freshworktest.SearchFragment"
+        android:name="com.example.freshworktest.fragments.SearchFragment"
         android:label="fragment_search_fragment"
-        tools:layout="@layout/fragment_search_fragment" />
+        tools:layout="@layout/search_fragment" >
+        <action
+            android:id="@+id/action_search_fragment_to_favourite"
+            app:destination="@id/favourite" />
+    </fragment>
     <fragment
         android:id="@+id/favourite"
-        android:name="com.example.freshworktest.favourite"
+        android:name="com.example.freshworktest.fragments.FavouriteFragment"
         android:label="fragment_favourite"
-        tools:layout="@layout/fragment_favourite" />
+        tools:layout="@layout/fragment_favourite" >
+        <action
+            android:id="@+id/action_favourite_to_search_fragment"
+            app:destination="@id/search_fragment" />
+    </fragment>
 </navigation>
