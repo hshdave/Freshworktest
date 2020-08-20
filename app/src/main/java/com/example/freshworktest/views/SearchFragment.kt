@@ -5,7 +5,6 @@ import android.view.*
 import android.widget.AbsListView
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
-import androidx.core.app.ActivityCompat.recreate
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
@@ -20,7 +19,6 @@ import com.example.freshworktest.presenter.ViewPresenter
 import com.example.freshworktest.presenter.database.AppDatabase
 import com.example.freshworktest.presenterImpl.SearchFragmentPresenterImpl
 import com.github.ybq.android.spinkit.SpinKitView
-import com.google.android.material.snackbar.Snackbar
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
