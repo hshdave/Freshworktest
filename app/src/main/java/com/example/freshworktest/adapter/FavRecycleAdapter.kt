@@ -1,9 +1,9 @@
 package com.example.freshworktest.adapter
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -13,29 +13,27 @@ import com.bumptech.glide.request.RequestOptions
 import com.example.freshworktest.R
 import com.example.freshworktest.dao.GifsDao
 import com.example.freshworktest.entity.Gifsroom
-import com.example.freshworktest.model.Gifsmodel
 import com.example.freshworktest.presenter.database.AppDatabase
+import com.github.ivbaranov.mfb.MaterialFavoriteButton
+import com.github.ybq.android.spinkit.SpinKitView
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.annotations.NonNull
-import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.recyclerviewitem.view.*
-import okhttp3.internal.notifyAll
 
-class FavRecycleAdapter(private var data: ArrayList<Gifsroom>) :  RecyclerView.Adapter<FavRecycleAdapter.FavadapterViewHolder>() {
+class FavRecycleAdapter(private var data: ArrayList<Gifsroom>) :  RecyclerView.Adapter<FavRecycleAdapter.FavAdapterViewHolder>() {
 
     private var db: AppDatabase? = null
     private var gifsDao : GifsDao? = null
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FavadapterViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FavAdapterViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.recyclerviewitem,parent,false)
 
-        return FavadapterViewHolder(view)
+        return FavAdapterViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: FavadapterViewHolder, position: Int) {
-        if (data!!.size > 0)
+    override fun onBindViewHolder(holder: FavAdapterViewHolder, position: Int) {
+        if (data.size > 0)
         {
             holder.favBind(data[position])
             holder.favButton.setOnClickListener {
@@ -47,7 +45,7 @@ class FavRecycleAdapter(private var data: ArrayList<Gifsroom>) :  RecyclerView.A
         }
     }
 
-    fun removeItem(position: Int)
+    private fun removeItem(position: Int)
     {
         data.removeAt(position)
         notifyItemRemoved(position)
@@ -59,7 +57,7 @@ class FavRecycleAdapter(private var data: ArrayList<Gifsroom>) :  RecyclerView.A
     private fun removeFromFavClicked(data : Gifsroom,view :View)
     {
         Observable.fromCallable {
-            db = view?.context.let { AppDatabase.getAppDataBase(context = it) }
+            db = view.context.let { AppDatabase.getAppDataBase(context = it) }
             gifsDao = db?.gifDao()
             with(gifsDao)
             {
@@ -72,11 +70,11 @@ class FavRecycleAdapter(private var data: ArrayList<Gifsroom>) :  RecyclerView.A
         Toast.makeText(view.context,"Removed from Favourite!", Toast.LENGTH_LONG).show()
     }
 
-    class FavadapterViewHolder(itemView: View): RecyclerView.ViewHolder(itemView)
+    class FavAdapterViewHolder(itemView: View): RecyclerView.ViewHolder(itemView)
     {
-        val imageViewGIF = itemView.gif_ImageView
-        val progress = itemView.recycle_progress
-        val favButton = itemView.favButton
+        private val imageViewGIF: ImageView = itemView.gif_ImageView
+        private val progress: SpinKitView = itemView.spin_kitRItem
+        val favButton: MaterialFavoriteButton = itemView.favButton
 
         fun favBind(favGifs : Gifsroom)
         {
@@ -90,7 +88,8 @@ class FavRecycleAdapter(private var data: ArrayList<Gifsroom>) :  RecyclerView.A
                 .transition(DrawableTransitionOptions.withCrossFade(250))
                 .into(imageViewGIF)
 
-            favButton.isFavorite = true
+
+            progress.visibility = View.GONE
         }
 
 

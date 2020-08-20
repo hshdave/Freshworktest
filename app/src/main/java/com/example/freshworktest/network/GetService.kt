@@ -10,9 +10,9 @@ import retrofit2.http.Query
 interface GetService {
 
     @GET("search")
-    fun getGifs(@Query("q") q:String, @Query("api_key") key:String): Observable<Response<Gifsmodel>>
+    fun getGifs(@Query("q") q:String, @Query("api_key") key:String,@Query("offset") offset:Int): Observable<Response<Gifsmodel>>
 
     @GET("trending")
-    fun getTrendingGifs(@Query("api_key") key:String): Observable<Response<Gifsmodel>>
+    fun getTrendingGifs(@Query("api_key") key:String,@Query("offset") offset:Int): Observable<Response<Gifsmodel>>
 
 }

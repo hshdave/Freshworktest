@@ -1,19 +1,19 @@
-package com.example.freshworktest.fragments
+package com.example.freshworktest.views
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.Observer
+import android.widget.TextView
+import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.freshworktest.R
 import com.example.freshworktest.adapter.FavRecycleAdapter
-import com.example.freshworktest.adapter.GifAdapter
 import com.example.freshworktest.dao.GifsDao
 import com.example.freshworktest.entity.Gifsroom
-import com.example.freshworktest.model.Gifsmodel
+import com.example.freshworktest.network.NetworkConnection
 import com.example.freshworktest.presenter.ViewPresenter
 import com.example.freshworktest.presenter.database.AppDatabase
 import com.example.freshworktest.presenterImpl.FavFragmentPresenterImpl
@@ -22,8 +22,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_favourite.*
 import kotlinx.android.synthetic.main.search_fragment.*
-import kotlinx.android.synthetic.main.search_fragment.search_recycler
-import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class FavouriteFragment : Fragment() , ViewPresenter.FavouriteFragmentView{
 
@@ -32,18 +30,13 @@ class FavouriteFragment : Fragment() , ViewPresenter.FavouriteFragmentView{
     private var adapter : FavRecycleAdapter?=null
     private var arrayList : ArrayList<Gifsroom>? = null
 
-    private var db: AppDatabase? = null
-    private var gifsDao : GifsDao? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
 
     override fun onResume() {
         super.onResume()
         println("onResume Called from Fav")
         favFragmentPresenterImpl!!.loadFavouriteGifs()
         adapter?.notifyDataSetChanged()
+
     }
 
 
@@ -54,6 +47,7 @@ class FavouriteFragment : Fragment() , ViewPresenter.FavouriteFragmentView{
 
     fun initUI()
     {
+        arrayList = ArrayList()
         gridLayoutManager = GridLayoutManager(this.context,2)
         fav_recyclerView.setHasFixedSize(true)
         fav_recyclerView.itemAnimator = DefaultItemAnimator()
@@ -75,41 +69,40 @@ class FavouriteFragment : Fragment() , ViewPresenter.FavouriteFragmentView{
         println("onViewCreated called!")
 
         favFragmentPresenterImpl = FavFragmentPresenterImpl(activity?.applicationContext,this)
+
+
     }
 
 
 
     override fun getFavouriteGifs(gifs: List<Gifsroom>)
     {
-
-        activity?.runOnUiThread(Runnable {
             if (gifs.isNotEmpty())
             {
-                arrayList = gifs.toCollection(ArrayList())
+                activity?.runOnUiThread(Runnable {
 
-                adapter = FavRecycleAdapter(arrayList!!)
+                    arrayList = gifs.toCollection(ArrayList())
 
-                fav_recyclerView.adapter = adapter
+                    adapter = FavRecycleAdapter(arrayList!!)
 
-                adapter!!.notifyDataSetChanged()
+                    fav_recyclerView.adapter = adapter
+
+                    adapter!!.notifyDataSetChanged()
+                })
+
             }
-        })
 
 
     }
 
-    private fun removeFromDatabase(gifs :Gifsroom)
-    {
-        Observable.fromCallable {
-            db = activity?.applicationContext?.let { AppDatabase.getAppDataBase(context = it) }
-            gifsDao = db?.gifDao()
-            with(gifsDao)
-            {
-                this?.deleteGifs(gifs.id)
-            }
-        }.subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe()
+    override fun validateError() {
+        noFavInternetLayout.visibility = View.VISIBLE
+        Toast.makeText(activity?.applicationContext,"Please check your internet connection!", Toast.LENGTH_LONG)
+            .show()
+    }
+
+    override fun checkInternet(): Boolean {
+        return NetworkConnection.isNetworkConnected(activity?.applicationContext!!)
     }
 
 

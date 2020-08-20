@@ -29,20 +29,26 @@ class FavFragmentPresenterImpl : ViewPresenter.FavouriteFragmentPresnter {
 
     override fun loadFavouriteGifs() {
 
-       disposable = Observable.fromCallable {
-            db = context?.applicationContext?.let { AppDatabase.getAppDataBase(context = it) }
-            gifsDao = db?.gifDao()
+        if (favouriteFragmentView!!.checkInternet()) {
 
-            db?.gifDao()?.getAllGifs()
+            disposable = Observable.fromCallable {
+                db = context?.applicationContext?.let { AppDatabase.getAppDataBase(context = it) }
+                gifsDao = db?.gifDao()
 
-        }.doOnNext { list ->
-           if (list != null) {
-               favouriteFragmentView?.getFavouriteGifs(list)
-           }
+                db?.gifDao()?.getAllGifs()
 
-        }.subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe()
+            }.doOnNext { list ->
+                if (list != null) {
+                    favouriteFragmentView?.getFavouriteGifs(list)
+                }
+
+            }.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe()
+
+        }else{
+            favouriteFragmentView!!.validateError()
+        }
     }
 
 

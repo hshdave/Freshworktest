@@ -57,13 +57,13 @@ class Apiclient {
         return okHttpClient.build()
     }
 
-    fun getSearchGIFS(searchKey : String): Observable<Response<Gifsmodel>>
+    fun getSearchGIFS(searchKey : String,offset:Int): Observable<Response<Gifsmodel>>
     {
-        return getService.getGifs(searchKey,BuildConfig.API_KEY)
+        return getService.getGifs(searchKey,BuildConfig.API_KEY,offset)
     }
 
-    fun getTrendingGIFS() : Observable<Response<Gifsmodel>>
+    fun getTrendingGIFS(offset:Int) : Observable<Response<Gifsmodel>>
     {
-        return getService.getTrendingGifs(BuildConfig.API_KEY)
+        return getService.getTrendingGifs(BuildConfig.API_KEY,offset)
     }
 }

@@ -21,42 +21,61 @@ class SearchFragmentPresenterImpl : ViewPresenter.SearchFragmentPresenter, ViewM
     }
 
 
-    override fun loadSearchData(searchKey: String) {
+    override fun loadSearchData(searchKey: String,offset : Int) {
 
-        val apiclient = Apiclient()
-        disposable = apiclient.getSearchGIFS(searchKey)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { listResponse ->
-                val responseCode = listResponse.code()
+        if (searchFragmentView!!.checkInternet()) {
 
-                when(responseCode) {
-                    200, 201, 202 -> { searchFragmentView!!.onSuccess(listResponse) }
-                    401 -> { }
-                    402 -> { }
-                    500 -> { }
-                    501 -> { }
+            val apiclient = Apiclient()
+            disposable = apiclient.getSearchGIFS(searchKey, offset)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { listResponse ->
+                    val responseCode = listResponse.code()
+
+                    when (responseCode) {
+                        200, 201, 202 -> {
+                            searchFragmentView!!.onSuccess(listResponse)
+                        }
+                        401 -> {
+                        }
+                        402 -> {
+                        }
+                        500 -> {
+                        }
+                        501 -> {
+                        }
+                    }
                 }
-            }
+        }else
+        {
+            searchFragmentView!!.validateError()
+        }
+
+
     }
 
-    override fun loadTrendingGif() {
+    override fun loadTrendingGif(offset : Int) {
+        if (searchFragmentView!!.checkInternet()) {
+            val apiclient = Apiclient()
+            disposable = apiclient.getTrendingGIFS(offset)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { listResponse ->
+                    val responseCode = listResponse.code()
 
-        val apiclient = Apiclient()
-        disposable = apiclient.getTrendingGIFS()
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { listResponse ->
-                val responseCode = listResponse.code()
-
-                when(responseCode) {
-                    200, 201, 202 -> { searchFragmentView!!.onSuccess(listResponse) }
-                    401 -> { }
-                    402 -> { }
-                    500 -> { }
-                    501 -> { }
+                    when(responseCode) {
+                        200, 201, 202 -> { searchFragmentView!!.onSuccess(listResponse) }
+                        401 -> { }
+                        402 -> { }
+                        500 -> { }
+                        501 -> { }
+                    }
                 }
-            }
+        }else
+        {
+            searchFragmentView!!.validateError()
+        }
+
     }
 
     override fun onStop() {

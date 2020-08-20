@@ -9,7 +9,6 @@ import com.example.freshworktest.entity.Gifsroom
 import com.example.freshworktest.dao.GifsDao
 
 @Database(entities = [Gifsroom::class], version = 1)
-@TypeConverters(DataTypeConverters::class)
 abstract class AppDatabase : RoomDatabase(){
 
     abstract fun gifDao() : GifsDao

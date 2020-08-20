@@ -3,8 +3,8 @@ package com.example.freshworktest.adapter
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.example.freshworktest.fragments.FavouriteFragment
-import com.example.freshworktest.fragments.SearchFragment
+import com.example.freshworktest.views.FavouriteFragment
+import com.example.freshworktest.views.SearchFragment
 
 class ViewPagerAdapter(activity : AppCompatActivity, private val itemCount : Int):FragmentStateAdapter(activity) {
 
